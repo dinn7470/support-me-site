@@ -1,0 +1,1 @@
+{"root":["./vite.config.ts","./src/app.tsx","./src/main.tsx","./src/supabase-client.ts","./src/vite-env.d.ts","./src/components/createpost.tsx","./src/components/layout.tsx","./src/components/navbar.tsx","./src/components/postitem.tsx","./src/components/postlist.tsx","./src/context/authcontext.tsx","./src/pages/createpostpage.tsx","./src/pages/home.tsx"],"version":"5.8.3"}

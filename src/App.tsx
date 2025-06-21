@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import { Home } from "./pages/Home";
 import { Navbar } from "./components/Navbar";
-import {CreatePostPage} from "./pages/CreatePostPage.tsx"; // adjust path if needed
+import {CreatePostPage} from "./pages/CreatePostPage"; // adjust path if needed
 function App() {
     return (
         <div>

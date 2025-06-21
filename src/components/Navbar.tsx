@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom"; // ✅ Corrected import
-import { useAuth } from "../context/AuthContext.tsx";
+import { useAuth } from "../context/AuthContext";
 
 export const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);

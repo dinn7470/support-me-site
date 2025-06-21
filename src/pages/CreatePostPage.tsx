@@ -1,4 +1,4 @@
-import {CreatePost} from "../components/CreatePost.tsx";
+import {CreatePost} from "../components/CreatePost";
 
 export const CreatePostPage = () => {
     return (<div>
