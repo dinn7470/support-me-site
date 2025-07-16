@@ -1,43 +1,46 @@
 import { Link } from "react-router-dom";
-import { Post } from "./PostList";
+import { formatDistanceToNow, parseISO, isValid } from "date-fns";
+import type { JSX } from "react";
+
+export interface Post {
+    id: number;
+    title: string;
+    content: string;
+    created_at: string;
+    author_name?: string;
+}
 
 interface Props {
     post: Post;
 }
 
-const PostItem = ({ post }: Props) => {
+const PostItem = ({ post }: Props): JSX.Element => {
+    const parsedDate = parseISO(post.created_at);
+    const isParsedValid = isValid(parsedDate);
+    const showTime = isParsedValid
+        ? formatDistanceToNow(parsedDate, { addSuffix: true })
+        : "Unknown time";
+
     return (
-        <div className="relative group">
-        
-            {/* Clickable post container */}
-            <Link to={`/post/${post.id}`} className="block relative z-10">
-                <div className="w-full md:w-80 bg-[rgb(24,27,32)] border border-[rgb(84,90,106)] rounded-[20px] text-white flex flex-col p-5 overflow-hidden transition-colors duration-300 group-hover:bg-gray-800">
-
-                    {/* Avatar and Title */}
-                    <div className="flex items-center space-x-3 mb-2">
-                        {post.author_avatar_url ? (
-                            <img
-                                src={post.author_avatar_url}
-                                alt="User Avatar"
-                                className="w-[35px] h-[35px] rounded-full object-cover"
-                            />
-                        ) : (
-                            <div className="w-[35px] h-[35px] rounded-full bg-gradient-to-tl from-purple-700 to-purple-900 flex items-center justify-center text-sm font-bold">
-                                {post.author_name?.[0]?.toUpperCase() || "?"}
-                            </div>
-                        )}
-                        <div className="text-sm text-gray-400">{post.author_name || post.author_email || "Anonymous"}</div>
+        <article className="bg-surface p-4 rounded-xl text-accent dark:bg-zinc-900 dark:text-white shadow-card transition space-y-2">
+            <Link
+                to={`/post/${post.id}`}
+                className="block hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary rounded"
+                aria-label={`View post titled ${post.title}`}
+            >
+                <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+                        {post.author_name?.charAt(0) || "U"}
                     </div>
-
-                    {/* Title */}
-                    <div className="text-[18px] font-semibold mb-2">{post.title}</div>
-
-                    {/* Content preview */}
-                    <p className="text-sm text-gray-300 line-clamp-3">{post.content}</p>
+                    <p className="font-medium text-sm">{post.author_name}</p>
                 </div>
+                <h2 className="font-semibold text-lg">{post.title}</h2>
+                <p className="text-muted dark:text-gray-300">{post.content}</p>
+                <p className="text-xs text-muted mt-2">{showTime}</p>
             </Link>
-        </div>
+        </article>
     );
 };
 
 export default PostItem;
+

@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "../supabase-client";
-import PostItem from "./PostItem"; // ✅ Placeholder or actual component
+import { Link } from "react-router-dom";
+import { formatDistanceToNow, parseISO, isValid } from "date-fns";
+import type { ReactNode } from "react";
+import { JSX } from "react";
 
-// ✅ Shared post interface
 export interface Post {
     id: number;
     title: string;
@@ -13,45 +13,42 @@ export interface Post {
     author_avatar_url?: string;
 }
 
-// ✅ Fetch posts from Supabase
-const fetchPosts = async (): Promise<Post[]> => {
-    const { data, error } = await supabase
-        .from("Posts")
-        .select("*")
-        .order("created_at", { ascending: false });
+interface Props {
+    post: Post;
+}
 
-    if (error) throw new Error(error.message);
-    return data || [];
-};
-
-// ✅ PostList component
-const PostList = () => {
-    const {
-        data: posts,
-        error,
-        isLoading,
-    } = useQuery<Post[], Error>({
-        queryKey: ["posts"],
-        queryFn: fetchPosts,
-    });
-
-    if (isLoading) {
-        return <div className="text-white mt-24 text-center">Loading posts...</div>;
-    }
-
-    if (error) {
-        return <div className="text-red-500 mt-24 text-center">Error: {error.message}</div>;
-    }
+const PostItem = ({ post }: Props): JSX.Element => {
+    const parsedDate = parseISO(post.created_at);
+    const isParsedValid = isValid(parsedDate);
+    const showTime = isParsedValid
+        ? formatDistanceToNow(parsedDate, { addSuffix: true })
+        : "Unknown time";
 
     return (
-        <div className="pt-24 px-4 bg-black text-white min-h-screen">
-            <div className="max-w-2xl mx-auto space-y-6">
-                {posts?.map((post) => (
-                    <PostItem key={post.id} post={post} />
-                ))}
-            </div>
-        </div>
+        <article className="bg-[#1c1c1c] p-4 rounded-xl text-white shadow hover:shadow-lg transition space-y-2">
+            <Link
+                to={`/post/${post.id}`}
+                className="block hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-fuchsia-500 rounded"
+                aria-label={`View post titled ${post.title}`}
+            >
+                <div className="flex items-center gap-3 mb-2">
+                    <div className="w-10 h-10 rounded-full bg-purple-700 flex items-center justify-center font-bold text-white">
+                        {post.author_name?.charAt(0) || "U"}
+                    </div>
+                    <div>
+                        <p className="font-medium text-sm">{post.author_name}</p>
+                    </div>
+                </div>
+
+                <h2 className="font-bold text-lg">{post.title}</h2>
+                <p className="text-gray-300">{post.content}</p>
+
+                {/* ✅ Clean timestamp */}
+                <p className="text-xs text-gray-400 mt-2">{showTime}</p>
+            </Link>
+        </article>
     );
 };
 
-export default PostList;
+export default PostItem;
+

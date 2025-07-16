@@ -1,6 +1,12 @@
 import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
 import { Link } from "react-router-dom";
+import { formatDistanceToNow, parseISO, isValid } from "date-fns";
 const PostItem = ({ post }) => {
-    return (_jsx("div", { className: "relative group", children: _jsx(Link, { to: `/post/${post.id}`, className: "block relative z-10", children: _jsxs("div", { className: "w-full md:w-80 bg-[rgb(24,27,32)] border border-[rgb(84,90,106)] rounded-[20px] text-white flex flex-col p-5 overflow-hidden transition-colors duration-300 group-hover:bg-gray-800", children: [_jsxs("div", { className: "flex items-center space-x-3 mb-2", children: [post.author_avatar_url ? (_jsx("img", { src: post.author_avatar_url, alt: "User Avatar", className: "w-[35px] h-[35px] rounded-full object-cover" })) : (_jsx("div", { className: "w-[35px] h-[35px] rounded-full bg-gradient-to-tl from-purple-700 to-purple-900 flex items-center justify-center text-sm font-bold", children: post.author_name?.[0]?.toUpperCase() || "?" })), _jsx("div", { className: "text-sm text-gray-400", children: post.author_name || post.author_email || "Anonymous" })] }), _jsx("div", { className: "text-[18px] font-semibold mb-2", children: post.title }), _jsx("p", { className: "text-sm text-gray-300 line-clamp-3", children: post.content })] }) }) }));
+    const parsedDate = parseISO(post.created_at);
+    const isParsedValid = isValid(parsedDate);
+    const showTime = isParsedValid
+        ? formatDistanceToNow(parsedDate, { addSuffix: true })
+        : "Unknown time";
+    return (_jsx("article", { className: "bg-surface p-4 rounded-xl text-accent dark:bg-zinc-900 dark:text-white shadow-card transition space-y-2", children: _jsxs(Link, { to: `/post/${post.id}`, className: "block hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-primary rounded", "aria-label": `View post titled ${post.title}`, children: [_jsxs("div", { className: "flex items-center gap-3 mb-2", children: [_jsx("div", { className: "w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold", children: post.author_name?.charAt(0) || "U" }), _jsx("p", { className: "font-medium text-sm", children: post.author_name })] }), _jsx("h2", { className: "font-semibold text-lg", children: post.title }), _jsx("p", { className: "text-muted dark:text-gray-300", children: post.content }), _jsx("p", { className: "text-xs text-muted mt-2", children: showTime })] }) }));
 };
 export default PostItem;
